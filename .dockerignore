@@ -1,0 +1,7 @@
+# Keep the build context small and avoid leaking local junk/secrets into the image
+__pycache__/
+*.pyc
+.git
+.gitignore
+.env
+*.md
