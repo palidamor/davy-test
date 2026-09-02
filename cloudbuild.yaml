@@ -1,13 +1,36 @@
 steps:
+  # Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
       - '-t'
-      - '${_IMAGE}'
+      - 'us-west1-docker.pkg.dev/$PROJECT_ID/davy-test/davy-test:$COMMIT_SHA'
       - '.'
 
-images:
-  - '${_IMAGE}'
+  # Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-west1-docker.pkg.dev/$PROJECT_ID/davy-test/davy-test:$COMMIT_SHA'
 
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'davy-test'
+      - '--image'
+      - 'us-west1-docker.pkg.dev/$PROJECT_ID/davy-test/davy-test:$COMMIT_SHA'
+      - '--region'
+      - 'us-west1'
+      - '--platform'
+      - 'managed'
+
+# Tell Cloud Build where the resulting image is
+images:
+  - 'us-west1-docker.pkg.dev/$PROJECT_ID/davy-test/davy-test:$COMMIT_SHA'
+
+# Required when using a custom build service account
 options:
   logging: CLOUD_LOGGING_ONLY
