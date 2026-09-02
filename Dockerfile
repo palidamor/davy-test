@@ -18,7 +18,7 @@ COPY . .
 # Create a non-root user and run as that user. Cloud Run (and containers in
 # general) should never run application code as root — limits the damage if
 # the app is ever compromised.
-# Docs: https://cloud.google.com/run/docs/tips/general#dont-run-as-root
+# Docs: https://docs.cloud.google.com/run/docs/tips/general#container-security
 RUN useradd -m appuser
 USER appuser
 
